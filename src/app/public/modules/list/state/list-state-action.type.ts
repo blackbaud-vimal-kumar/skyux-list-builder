@@ -1,7 +1,7 @@
 import {
   ListItemsLoadAction,
   ListItemsSetLoadingAction,
-  ListItemsSetSelectedItemsTrueAction
+  ListItemsSetSelectedAction
 } from './items/actions';
 
 import {
@@ -34,8 +34,7 @@ import {
   ListSelectedSetLoadingAction,
   ListSelectedLoadAction,
   ListSelectedSetItemSelectedAction,
-  ListSelectedSetItemsSelectedAction,
-  ListSelectedSetItemsSelectedTrueAction
+  ListSelectedSetItemsSelectedAction
 } from './selected/actions';
 
 import {
@@ -49,11 +48,11 @@ import {
 } from './filters/actions';
 
 export type ListStateAction =
-  ListItemsSetLoadingAction | ListItemsLoadAction | ListItemsSetSelectedItemsTrueAction |
+  ListItemsSetLoadingAction | ListItemsLoadAction | ListItemsSetSelectedAction |
   ListPagingSetMaxPagesAction | ListPagingSetItemsPerPageAction | ListPagingSetPageNumberAction |
   ListViewsLoadAction | ListViewsSetActiveAction | ListToolbarItemsLoadAction |
   ListToolbarSetExistsAction | ListSearchSetSearchTextAction | ListSearchSetFunctionsAction |
   ListSearchSetFieldSelectorsAction | ListSearchSetOptionsAction | ListSelectedSetLoadingAction |
-  ListSelectedLoadAction | ListSelectedSetItemSelectedAction | ListSelectedSetItemsSelectedAction | ListSelectedSetItemsSelectedTrueAction |
+  ListSelectedLoadAction | ListSelectedSetItemSelectedAction | ListSelectedSetItemsSelectedAction |
   ListToolbarSetTypeAction | ListSortSetFieldSelectorsAction | ListSortSetAvailableAction |
   ListSortSetGlobalAction | ListFiltersUpdateAction | ListToolbarItemsRemoveAction | ListToolbarItemsDisableAction;

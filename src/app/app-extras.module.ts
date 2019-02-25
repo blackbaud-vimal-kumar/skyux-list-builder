@@ -18,8 +18,16 @@ import {
   SkyListToolbarModule
 } from './public';
 
+import { ListViewTestComponent } from './public/modules/list/fixtures';
+import { BrowserModule } from '@angular/platform-browser';
+
 @NgModule({
+  declarations:
+  [
+    ListViewTestComponent
+  ],
   imports: [
+    BrowserModule,
     SkyIconModule,
     SkyListModule,
     SkyListFiltersModule,
@@ -35,7 +43,8 @@ import {
     SkyListPagingModule,
     SkyListSecondaryActionsModule,
     SkyListToolbarModule,
-    SkyRadioModule
+    SkyRadioModule,
+    ListViewTestComponent
   ],
   providers: [],
   entryComponents: []

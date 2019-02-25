@@ -29,4 +29,8 @@ export class ListToolbarVisualComponent {
   public fruitTypeFilterFunction(): boolean {
     return true;
   }
+
+  public selectedIdsChange(data: any) {
+    console.log('selectedIdsChange:', data);
+  }
 }

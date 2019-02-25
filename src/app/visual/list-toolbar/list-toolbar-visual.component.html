@@ -2,6 +2,7 @@
   class="sky-padding-even-default"
   id="screenshot-list-toolbar"
 >
+  <h2>Basic toolbar</h2>
   <sky-list
     [data]="data"
   >
@@ -101,8 +102,10 @@
   class="sky-padding-even-default"
   id="screenshot-list-toolbar-with-multiselect"
 >
+<h2>Toolbar with multiselect enabled</h2>
   <sky-list
     [data]="data"
+    (selectedIdsChange)="selectedIdsChange($event)"
   >
     <sky-list-toolbar>
       <sky-list-secondary-actions>
@@ -194,7 +197,7 @@
       </sky-list-filter-inline>
     </sky-list-toolbar>
 
-    <list-toolbar-internal-visual></list-toolbar-internal-visual>
+    <sky-list-toolbar-internal-visual></sky-list-toolbar-internal-visual>
 
   </sky-list>
 </div>

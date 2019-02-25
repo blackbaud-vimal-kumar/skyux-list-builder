@@ -23,10 +23,6 @@ import {
 } from './state/selected/actions';
 
 import {
-  ListSelectedModel
-} from './state/selected/selected.model';
-
-import {
   ListSortModel
 } from './state/sort/sort.model';
 
@@ -37,10 +33,6 @@ import {
 import {
   ListFilterModel
 } from './state/filters/filter.model';
-
-import {
-  AsyncItem
-} from 'microedge-rxstate/dist';
 
 import {
   getValue
@@ -110,6 +102,10 @@ import {
   ListViewModel
 } from './state/views/view.model';
 
+import {
+  SkyComparisonHelper
+} from '../shared/comparison-helper';
+
 let idIndex = 0;
 
 @Component({
@@ -164,6 +160,9 @@ export class SkyListComponent implements AfterContentInit, OnChanges, OnDestroy 
 
   private ngUnsubscribe = new Subject();
 
+  // Used for backwards compatability with old selectedIdMap
+  private _selectedIdMap = new Map<string, boolean>();
+
   constructor(
     private state: ListState,
     private dispatcher: ListStateDispatcher
@@ -205,32 +204,43 @@ export class SkyListComponent implements AfterContentInit, OnChanges, OnDestroy 
       this.dispatcher.next(new ListItemsLoadAction(result.items, true, true, result.count));
     });
 
+    // The ListState selected property is deprecated.
+    // This is left in for backwards compatability.
+    if (this.selectedIdsChange.observers.length > 0) {
+      this.state.map(current => current.selected).distinctUntilChanged()
+        .skip(1)
+        .subscribe((selected: any) => {
+          // console.log('selected!');
+          this.selectedIdsChange.emit(selected.item.selectedIdMap);
+        });
+    }
+
     // Watch for selection changes.
-    this.state.map(current => current.selected)
+    this.state.map(current => current.items.items)
       .takeUntil(this.ngUnsubscribe)
       .distinctUntilChanged()
-      .skip(1)
-      .subscribe((selected) => {
+      .subscribe((listItemModels: ListItemModel[]) => {
 
         // Update lastSelectedIds to help us retain user selections.
         let selectedIdsList: string[] = [];
-        selected.item.selectedIdMap.forEach((value, key, map) => {
-          if (value === true) {
-            selectedIdsList.push(key);
+        listItemModels.forEach(item => {
+          if (item.isSelected) {
+            selectedIdsList.push(item.id);
           }
         });
         this.lastSelectedIds = selectedIdsList;
 
         // Emit new selected items if there is an observer.
         if (this.selectedIdsChange.observers.length > 0) {
-          this.selectedIdsChange.emit(selected.item.selectedIdMap);
+          this.setSelectedIdMap(listItemModels);
+          this.selectedIdsChange.emit(this._selectedIdMap);
         }
-      });
+    });
 
     if (this.appliedFiltersChange.observers.length > 0) {
       this.state.map(current => current.filters)
         .takeUntil(this.ngUnsubscribe)
-        .distinctUntilChanged(this.arraysEqual)
+        .distinctUntilChanged(SkyComparisonHelper.arraysEqual)
         .skip(1)
         .subscribe((filters: any) => {
           this.appliedFiltersChange.emit(filters);
@@ -280,7 +290,10 @@ export class SkyListComponent implements AfterContentInit, OnChanges, OnDestroy 
     let selectedChanged: boolean = false;
 
     return Observable.combineLatest(
-      this.state.map(s => s.filters).distinctUntilChanged(),
+      // TODO the filter comparer needs to allow value=true vs value=false trigger a reload.
+      // However, when selections are updated when trigger is engaged, it somehow gets caught in
+      // these comparers and does not reload
+      this.state.map(s => s.filters).distinctUntilChanged(this.filtersEqual),
       this.state.map(s => s.search).distinctUntilChanged(),
       this.state.map(s => s.sort.fieldSelectors).distinctUntilChanged(),
       this.state.map(s => s.paging.itemsPerPage).distinctUntilChanged(),
@@ -302,6 +315,7 @@ export class SkyListComponent implements AfterContentInit, OnChanges, OnDestroy 
         itemsData: Array<any>
       ) => {
 
+        // TODO: What to do here?
         if (selectedChanged) {
           this.dispatcher.next(new ListSelectedSetLoadingAction());
           this.dispatcher.next(new ListSelectedLoadAction(selected));
@@ -346,16 +360,6 @@ export class SkyListComponent implements AfterContentInit, OnChanges, OnDestroy 
       });
   }
 
-  public get selectedItems(): Observable<Array<ListItemModel>> {
-    return Observable.combineLatest(
-      this.state.map(current => current.items.items).distinctUntilChanged(),
-      this.state.map(current => current.selected).distinctUntilChanged(),
-      (items: Array<ListItemModel>, selected: AsyncItem<ListSelectedModel>) => {
-        return items.filter(i => selected.item.selectedIdMap.get(i.id));
-      }
-    ).takeUntil(this.ngUnsubscribe);
-  }
-
   public get lastUpdate() {
     return this.state
       .takeUntil(this.ngUnsubscribe)
@@ -383,9 +387,24 @@ export class SkyListComponent implements AfterContentInit, OnChanges, OnDestroy 
     return updatedListModel;
   }
 
-  private arraysEqual(arrayA: any[], arrayB: any[]) {
-    return arrayA.length === arrayB.length &&
-      arrayA.every((value, index) =>
-        value === arrayB[index]);
+  // Only set map value to false if it already exists.
+  // This is for backwards compatability to support the map object.
+  private setSelectedIdMap(listItemModel: any[]) {
+    listItemModel.forEach(item => {
+      if (item.isSelected) {
+        this._selectedIdMap.set(item.id, true);
+      } else {
+        if (this._selectedIdMap.get(item.id)) {
+          this._selectedIdMap.set(item.id, false);
+        }
+      }
+    });
+  }
+
+  private filtersEqual(filtersA: ListFilterModel[], filtersB: ListFilterModel[]) {
+    return filtersA.length === filtersB.length && filtersA.every(arrAFilter => {
+      const arrBFilter = filtersB.find(filter => filter.name === arrAFilter.name);
+      return arrAFilter.value === arrBFilter.value;
+    });
   }
 }

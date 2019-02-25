@@ -13,7 +13,7 @@ import {
 import {
   ListItemsLoadAction,
   ListItemsSetLoadingAction,
-  ListItemsSetSelectedItemsTrueAction
+  ListItemsSetSelectedAction
 } from './actions';
 
 export class ListItemsOrchestrator extends ListStateOrchestrator<AsyncList<ListItemModel>> {
@@ -24,7 +24,7 @@ export class ListItemsOrchestrator extends ListStateOrchestrator<AsyncList<ListI
     this
       .register(ListItemsSetLoadingAction, this.setLoading)
       .register(ListItemsLoadAction, this.load)
-      .register(ListItemsSetSelectedItemsTrueAction, this.setItemsSelectedTrue);
+      .register(ListItemsSetSelectedAction, this.setSelected);
   }
 
   private setLoading(
@@ -50,9 +50,9 @@ export class ListItemsOrchestrator extends ListStateOrchestrator<AsyncList<ListI
     );
   }
 
-  private setItemsSelectedTrue(
+  private setSelected(
     state: AsyncList<ListItemModel>,
-    action: ListItemsSetSelectedItemsTrueAction
+    action: ListItemsSetSelectedAction
   ): AsyncList<ListItemModel> {
 
     const newListItems = state.items.map(listItemModel => {

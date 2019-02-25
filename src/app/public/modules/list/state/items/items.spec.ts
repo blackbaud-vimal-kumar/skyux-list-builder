@@ -10,7 +10,7 @@ import {
 import {
   ListItemsLoadAction,
   ListItemsSetLoadingAction,
-  ListItemsSetSelectedItemsTrueAction
+  ListItemsSetSelectedAction
 } from './actions';
 
 import {
@@ -257,7 +257,7 @@ describe('list items', () => {
 
       tick();
 
-      dispatcher.next(new ListItemsSetSelectedItemsTrueAction(['1', '3']));
+      dispatcher.next(new ListItemsSetSelectedAction(['1', '3']));
 
       tick();
 
@@ -269,7 +269,7 @@ describe('list items', () => {
 
       tick();
 
-      dispatcher.next(new ListItemsSetSelectedItemsTrueAction(['2', '3']));
+      dispatcher.next(new ListItemsSetSelectedAction(['2', '3']));
 
       tick();
 
@@ -281,7 +281,7 @@ describe('list items', () => {
 
       tick();
 
-      dispatcher.next(new ListItemsSetSelectedItemsTrueAction([]));
+      dispatcher.next(new ListItemsSetSelectedAction([]));
 
       tick();
 

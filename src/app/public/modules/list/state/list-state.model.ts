@@ -18,10 +18,12 @@ export class ListStateModel {
   public items: AsyncList<ListItemModel> = new AsyncList<ListItemModel>();
   public paging: ListPagingModel = new ListPagingModel();
   public search: ListSearchModel = new ListSearchModel();
-  public selected: AsyncItem<ListSelectedModel> = new AsyncItem<ListSelectedModel>();
   public sort: ListSortModel = new ListSortModel();
   public toolbar: ListToolbarModel = new ListToolbarModel();
   public views: ListViewsModel = new ListViewsModel();
+
+  /** @deprecated since version 3.1.0, use ListItemModel's isSelected property instead */
+  public selected: AsyncItem<ListSelectedModel> = new AsyncItem<ListSelectedModel>();
 
   constructor() {
     this.selected.item = new ListSelectedModel();

@@ -10,6 +10,10 @@ import {
 } from 'rxjs/Subject';
 
 import {
+  Observable
+} from 'rxjs/Observable';
+
+import {
   SkyCheckboxChange
 } from '@skyux/forms';
 
@@ -23,10 +27,13 @@ import {
 
 import {
   ListPagingSetPageNumberAction,
-  ListSelectedModel,
   ListState,
   ListStateDispatcher
 } from '../list/state';
+
+import {
+  SkyComparisonHelper
+} from '../shared/comparison-helper';
 
 let uniqueId = 0;
 
@@ -42,7 +49,9 @@ export class SkyListMultiselectToolbarComponent implements OnInit, OnDestroy {
 
   public multiselectToolbarId = `sky-list-multiselect-toolbar-${uniqueId++}`;
 
-  private selectedIdMap = new Map<string, boolean>();
+  private _selectedIds: string[] = [];
+
+  private _lastSelectedIds: string[] = [];
 
   private ngUnsubscribe = new Subject();
 
@@ -52,11 +61,11 @@ export class SkyListMultiselectToolbarComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
-    this.state.map(t => t.selected.item)
+    this.state.map(t => t.items.items)
       .takeUntil(this.ngUnsubscribe)
-      .distinctUntilChanged((x, y) => (x === y && this.mapsEqual(x.selectedIdMap, y.selectedIdMap)))
-      .subscribe((model: ListSelectedModel) => {
-        this.selectedIdMap = model.selectedIdMap;
+      .distinctUntilChanged()
+      .subscribe((listItemModel: ListItemModel[]) => {
+        this.getSelectedIdsFromModel(listItemModel);
 
         if (this.showOnlySelected) {
           this.reapplyFilter(true);
@@ -129,26 +138,18 @@ export class SkyListMultiselectToolbarComponent implements OnInit, OnDestroy {
       value: isSelected.toString(),
       filterFunction: (model: ListItemModel, showOnlySelected: boolean) => {
         if (showOnlySelected.toString() !== false.toString()) {
-          return this.selectedIdMap.get(model.id);
+          return this._selectedIds.indexOf(model.id) > -1;
         }
       },
       defaultValue: false.toString()
     });
   }
 
-  /* istanbul ignore next */
-  private mapsEqual(mapA: Map<any, any>, mapB: Map<any, any>): boolean {
-    if (mapA.size !== mapB.size) {
-        return false;
-    }
-    for (let key of Array.from( mapA.keys()) ) {
-      let valueB = mapB.get(key);
-      let valueA = mapA.get(key);
-      if (valueB !== valueA || (valueB === undefined && !mapB.has(key))) {
-          return false;
-      }
-    }
-    return true;
+  private getSelectedIdsFromModel(models: ListItemModel[]) {
+    this._selectedIds = models
+      .filter(listItemModel => listItemModel.isSelected === true)
+      .map(item => item.id);
+    console.log('_selectedIds: ' + this._selectedIds);
   }
 
 }

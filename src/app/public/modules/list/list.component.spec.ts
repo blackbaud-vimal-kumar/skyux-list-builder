@@ -60,7 +60,7 @@ import {
 
 import {
   ListFilterModel,
-  ListItemsSetSelectedItemsTrueAction,
+  ListItemsSetSelectedAction,
   ListPagingModel,
   ListSearchModel,
   ListSearchSetFunctionsAction,
@@ -502,18 +502,6 @@ describe('List Component', () => {
         tick();
       }));
 
-      it('should allow users to access displayed selectedItems', fakeAsync(() => {
-        tick();
-        fixture.detectChanges();
-        component.list.selectedItems.subscribe((items)=> {
-          expect(items[0].data.column2).toBe('Apple');
-          expect(items[1].data.column2).toBe('Banana');
-        });
-
-        fixture.detectChanges();
-        tick();
-      }));
-
       it('should allow users to listen for selectedId changes on an event', fakeAsync(() => {
         tick();
         fixture.detectChanges();
@@ -539,16 +527,14 @@ describe('List Component', () => {
         ];
 
         // Select rows and apply "Show only selected" filter.
-        dispatcher.next(new ListSelectedSetItemsSelectedAction(['1', '2'], true));
+        dispatcher.setSelected(['1','2']);
         dispatcher.filtersUpdate(filters);
         fixture.detectChanges();
 
         // Expect rows to still be selected.
-        component.list.selectedItems.take(1).subscribe((items)=> {
-          expect(items.length === 2);
-          expect(items[0].data.column2).toBe('Apple');
-          expect(items[1].data.column2).toBe('Banana');
-        });
+        expect(component.selectedItems.size).toBe(2);
+        expect(component.selectedItems.get('1')).toBe(true);
+        expect(component.selectedItems.get('2')).toBe(true);
 
         // Change selections and disable the "Show only selected" filter.
         dispatcher.setSelected(['1','4']);
@@ -556,11 +542,10 @@ describe('List Component', () => {
         fixture.detectChanges();
 
         // Expect new rows to be selected.
-        component.list.selectedItems.take(1).subscribe((items)=> {
-          expect(items.length === 2);
-          expect(items[0].data.column2).toBe('Apple');
-          expect(items[1].data.column2).toBe('Carrot');
-        });
+        expect(component.selectedItems.size).toBe(3);
+        expect(component.selectedItems.get('1')).toBe(true);
+        expect(component.selectedItems.get('2')).toBe(false);
+        expect(component.selectedItems.get('4')).toBe(true);
 
       }));
     });
@@ -1282,8 +1267,8 @@ describe('List Component', () => {
       expect(action).not.toBeUndefined();
     });
 
-    it('should construct ListItemsSetSelectedItemsTrueAction', () => {
-      let action = new ListItemsSetSelectedItemsTrueAction(['1']);
+    it('should construct ListItemsSetSelectedAction', () => {
+      let action = new ListItemsSetSelectedAction(['1']);
       expect(action).not.toBeUndefined();
     });
 

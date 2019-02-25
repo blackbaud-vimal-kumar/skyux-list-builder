@@ -516,11 +516,11 @@ describe('List Toolbar Component', () => {
           let filterFunction = showSelectedFilter.filterFunction;
           expect(filterFunction(new ListItemModel('1', {}), true)).toEqual(true);
           expect(filterFunction(new ListItemModel('2', {}), true)).toEqual(true);
-          expect(filterFunction(new ListItemModel('3', {}), true)).toBe(undefined);
-          expect(filterFunction(new ListItemModel('4', {}), true)).toBe(undefined);
-          expect(filterFunction(new ListItemModel('5', {}), true)).toBe(undefined);
-          expect(filterFunction(new ListItemModel('6', {}), true)).toBe(undefined);
-          expect(filterFunction(new ListItemModel('7', {}), true)).toBe(undefined);
+          expect(filterFunction(new ListItemModel('3', {}), true)).toBe(false);
+          expect(filterFunction(new ListItemModel('4', {}), true)).toBe(false);
+          expect(filterFunction(new ListItemModel('5', {}), true)).toBe(false);
+          expect(filterFunction(new ListItemModel('6', {}), true)).toBe(false);
+          expect(filterFunction(new ListItemModel('7', {}), true)).toBe(false);
         });
     });
 
