@@ -12,9 +12,9 @@ import {
 } from '@angular/core/testing';
 
 import {
-  expect,
-  SkyAppTestUtility
-} from '@blackbaud/skyux-builder/runtime/testing/browser';
+  SkyAppTestUtility,
+  expect
+} from '@skyux-sdk/testing';
 
 import {
   ListFilterInlineTestComponent

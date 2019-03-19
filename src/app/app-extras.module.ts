@@ -14,6 +14,10 @@ import {
   SkyListToolbarModule
 } from './public';
 
+import {
+  AppSkyModule
+} from './app-sky.module';
+
 @NgModule({
   imports: [
     SkyIconModule,
@@ -24,6 +28,7 @@ import {
     SkyListToolbarModule
   ],
   exports: [
+    AppSkyModule,
     SkyIconModule,
     SkyListModule,
     SkyListFiltersModule,

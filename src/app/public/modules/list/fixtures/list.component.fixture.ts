@@ -5,7 +5,7 @@ import { SkyListToolbarComponent } from '../../list-toolbar';
 
 @Component({
   selector: 'sky-test-cmp',
-  template: require('./list.component.fixture.html')
+  template: './list.component.fixture.html'
 })
 export class ListTestComponent {
   @ViewChild(SkyListComponent)

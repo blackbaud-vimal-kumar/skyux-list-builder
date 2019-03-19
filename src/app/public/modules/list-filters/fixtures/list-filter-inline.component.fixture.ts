@@ -8,7 +8,7 @@ import {
 
  @Component({
    selector: 'sky-test-cmp',
-   template: require('./list-filter-inline.component.fixture.html')
+   template: './list-filter-inline.component.fixture.html'
  })
  export class ListFilterInlineTestComponent {
 

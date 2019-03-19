@@ -9,6 +9,9 @@
   "plugins": [
     "@skyux-sdk/builder-plugin-skyux"
   ],
+  "moduleAliases": {
+    "@skyux/list-builder": "./src/app/public"
+  },
   "testSettings": {
     "e2e": {
       "browserSet": "speedy"
@@ -16,5 +19,10 @@
     "unit": {
       "browserSet": "paranoid"
     }
+  },
+  "app": {
+    "styles": [
+      "@skyux/theme/css/sky.css"
+    ]
   }
 }
