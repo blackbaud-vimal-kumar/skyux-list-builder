@@ -79,7 +79,7 @@ import 'rxjs/add/observable/combineLatest';
 
 import 'rxjs/add/observable/of';
 
-import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/distinctUntilKeyChanged';
 
 import 'rxjs/add/operator/mergeMap';
 
@@ -228,11 +228,15 @@ export class SkyListComponent implements AfterContentInit, OnChanges, OnDestroy 
       });
 
     if (this.appliedFiltersChange.observers.length > 0) {
-      this.state.map(current => current.filters)
+      this.state
         .takeUntil(this.ngUnsubscribe)
-        .distinctUntilChanged(this.arraysEqual)
+        .distinctUntilKeyChanged('filters', (arrayA: any[], arrayB: any[]) => {
+          console.log('hit');
+          return this.arraysEqual(arrayA, arrayB);
+        })
         .skip(1)
         .subscribe((filters: any) => {
+          console.log('emitting');
           this.appliedFiltersChange.emit(filters);
         });
     }
@@ -344,7 +348,7 @@ export class SkyListComponent implements AfterContentInit, OnChanges, OnDestroy 
         });
       })
 
-      .flatMap((value: Observable<ListDataResponseModel>, index: number) => {
+      .flatMap((value: any, index: number) => {
         return value;
       });
   }
@@ -387,6 +391,8 @@ export class SkyListComponent implements AfterContentInit, OnChanges, OnDestroy 
   }
 
   private arraysEqual(arrayA: any[], arrayB: any[]): boolean {
+    console.log(arrayA);
+    console.log(arrayB);
     return arrayA.length === arrayB.length &&
       arrayA.every((value, index) =>
         value === arrayB[index]);

@@ -21,6 +21,14 @@ import {
 import {
   SkyListViewSwitcherModule
 } from './public';
+import { SkyModalModule } from '@skyux/modals';
+import { SkyCheckboxModule } from '@skyux/forms';
+import { SkyFilterModule } from '@skyux/lists';
+import { SkyListFiltersModalDemoComponent } from './visual/temp/list-filters-demo-modal.component';
+
+import {
+  AppSkyModule
+} from './app-sky.module';
 
 @NgModule({
   imports: [
@@ -34,6 +42,7 @@ import {
     SkyListViewGridModule
   ],
   exports: [
+    AppSkyModule,
     SkyIconModule,
     SkyListModule,
     SkyListFiltersModule,
@@ -41,9 +50,12 @@ import {
     SkyListSecondaryActionsModule,
     SkyListToolbarModule,
     SkyListViewSwitcherModule,
-    SkyListViewGridModule
+    SkyListViewGridModule,
+    SkyModalModule,
+    SkyCheckboxModule,
+    SkyFilterModule
   ],
   providers: [],
-  entryComponents: []
+  entryComponents: [SkyListFiltersModalDemoComponent]
 })
 export class AppExtrasModule { }

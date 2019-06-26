@@ -19,5 +19,10 @@
   },
   "moduleAliases": {
     "@skyux/list-builder": "./src/app/public"
+  },
+  "app": {
+    "styles": [
+      "@skyux/theme/css/sky.css"
+    ]
   }
 }
